@@ -128,6 +128,7 @@
       display: block;
     }
 
+    /* PORTADA */
     #homeScreen {
       display: flex;
       flex-direction: column;
@@ -135,7 +136,7 @@
       justify-content: center;
       text-align: center;
       padding: 70px 20px 20px;
-      background: radial-gradient(circle at top, #ffe29f 0%, #ffa99f 20%, #67b26f 60%, #141e30 100%);
+      background: radial-gradient(circle at top, #ffe29f 0%, #ffa99f 25%, #67b26f 60%, #141e30 100%);
     }
 
     .home-card {
@@ -151,11 +152,11 @@
     .home-title {
       font-size: 28px;
       letter-spacing: 0.04em;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .home-cover {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .home-cover img {
@@ -163,10 +164,12 @@
       border-radius: 18px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       display: block;
-      margin: 0 auto 8px;
+      margin: 0 auto;
     }
 
     .home-cover small {
+      display: block;
+      margin-top: 4px;
       font-size: 11px;
       opacity: 0.7;
     }
@@ -175,7 +178,7 @@
       width: 100%;
       height: 8px;
       border-radius: 999px;
-      margin: 8px auto 16px;
+      margin: 10px auto 16px;
       background: linear-gradient(90deg,
         #ff0000,
         #ff7f00,
@@ -191,19 +194,17 @@
     .home-quote {
       font-size: 15px;
       line-height: 1.5;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       opacity: 0.95;
     }
 
     .home-sign {
       font-size: 13px;
-      opacity: 0.8;
+      opacity: 0.9;
       margin-bottom: 18px;
     }
 
     .home-sign strong {
-      display: block;
-      margin-top: 4px;
       font-size: 14px;
     }
 
@@ -251,6 +252,7 @@
       background: rgba(0,0,0,0.7);
     }
 
+    /* JUEGO */
     #gameScreen {
       display: flex;
       flex-direction: column;
@@ -262,7 +264,28 @@
       flex: 1;
       width: 100%;
       overflow: hidden;
-      background: radial-gradient(circle at top, #364f6b 0%, #141e30 40%, #05070f 100%);
+      background: radial-gradient(circle at top,
+        #d5e8ff 0%,
+        #a9cfff 35%,
+        #7fb0f5 65%,
+        #5f7ea3 100%
+      );
+    }
+
+    .game-area::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        rgba(255,0,0,0.12),
+        rgba(255,165,0,0.12),
+        rgba(255,255,0,0.12),
+        rgba(0,255,0,0.12),
+        rgba(0,0,255,0.12),
+        rgba(75,0,130,0.12),
+        rgba(143,0,255,0.12)
+      );
+      pointer-events: none;
     }
 
     .game-area.paused::after {
@@ -373,6 +396,7 @@
       pointer-events: auto;
     }
 
+    /* PANEL LATERAL */
     .side-panel {
       position: absolute;
       top: 0;
@@ -556,9 +580,7 @@
         <span>Racha: <strong id="streak">0</strong></span>
         <span>Modo: <strong id="modeLabel">Lluvia</strong></span>
       </div>
-      <button id="micToggle" class="mic-off" title="Micrófono">
-        🎤
-      </button>
+      <button id="micToggle" class="mic-off" title="Micrófono">🎤</button>
     </header>
 
     <aside id="sidePanel" class="side-panel">
@@ -568,18 +590,14 @@
         <h3>Velocidad</h3>
         <label for="speedRange">Tiempo de caída</label>
         <input id="speedRange" type="range" min="1" max="5" value="3" />
-        <div class="panel-small-text">
-          1 = más lento · 5 = más rápido
-        </div>
+        <div class="panel-small-text">1 = más lento · 5 = más rápido</div>
       </div>
 
       <div class="panel-section">
         <h3>Palabras</h3>
         <label for="wordsInput">Lista personalizada (una por línea)</label>
         <textarea id="wordsInput" spellcheck="false"></textarea>
-        <div class="panel-small-text">
-          Si lo dejas vacío, se usa la lista básica.
-        </div>
+        <div class="panel-small-text">Si lo dejas vacío, se usa la lista básica.</div>
         <div class="panel-buttons">
           <button class="btn-xs outline" id="loadDefaultWords">Cargar básicas</button>
           <button class="btn-xs primary" id="applyWords">Usar estas</button>
@@ -617,7 +635,7 @@
 
           <div class="home-cover">
             <img src="portada-kayak.jpg" alt="Kayak en el agua" />
-            <small>Fotografía de portada · puedes sustituir este archivo por tu propio kayak.</small>
+            <small>Puedes sustituir esta imagen por tu propio kayak (mismo nombre de archivo).</small>
           </div>
 
           <div class="rainbow-bar"></div>
@@ -626,16 +644,12 @@
             La lectura mejora nuestro intelecto y ensancha la forma en que miramos el mundo.
           </p>
           <p class="home-sign">
-            Un juego de lectura en voz alta para todas las familias posibles.
-            <strong>Andrés L. Belluga</strong>
+            Creado por: <strong>Andrés L. Belluga</strong>
           </p>
+
           <div class="home-actions">
-            <button id="startGameBtn" class="btn btn-primary">
-              🌧️ Jugar en modo lluvia
-            </button>
-            <button id="openPanelFromHome" class="btn btn-secondary">
-              ⚙️ Ajustes y palabras
-            </button>
+            <button id="startGameBtn" class="btn btn-primary">🌧️ Jugar en modo lluvia</button>
+            <button id="openPanelFromHome" class="btn btn-secondary">⚙️ Ajustes y palabras</button>
           </div>
         </div>
       </section>
@@ -692,6 +706,7 @@
     let micOn = false;
     let mediaRecorder = null;
     let recordedChunks = [];
+
     const defaultWords = [
       "sol","luz","nube","árbol","hoja","gato","perro","patio","jardín","cielo",
       "libro","cuento","silla","mesa","puerta","ventana","camino","playa","río","flor",
@@ -709,7 +724,7 @@
       return str
         .toLowerCase()
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[̀-ͯ]/g, "")
         .trim();
     }
 
@@ -768,7 +783,7 @@
       rewardFill.style.width = "0%";
       modeLabel.textContent = "Lluvia";
       clearWords();
-      setStatus("Di la palabra en voz alta para hacerla explotar 🎈","#a1c4fd");
+      setStatus("Di la palabra en voz alta para hacerla explotar 🎈", "#a1c4fd");
       startSpawning();
     }
 
@@ -809,7 +824,7 @@
       wordEl.addEventListener("animationend", () => {
         if (!wordObj.matched) {
           updateStreak(false);
-          setStatus("Se escapó \"" + text + "\"","#ffb3b3");
+          setStatus("Se escapó \"" + text + "\"", "#ffb3b3");
         }
         removeWordById(id);
       });
@@ -879,7 +894,7 @@
           createConfettiForWord(wordObj.el);
           updateScore(3);
           updateStreak(true);
-          setStatus("El pajarito explotó \"" + wordObj.text + "\" 🕊️","#a1ffce");
+          setStatus("El pajarito explotó \"" + wordObj.text + "\" 🕊️", "#a1ffce");
           removeWordById(wordObj.id);
         }
       });
@@ -891,7 +906,7 @@
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        setStatus("Este navegador no soporta reconocimiento de voz.","#ffb3b3");
+        setStatus("Este navegador no soporta reconocimiento de voz.", "#ffb3b3");
         micToggle.disabled = true;
         return;
       }
@@ -913,7 +928,16 @@
 
       speechRecognition.onerror = (e) => {
         console.warn("Speech error:", e);
-        setStatus("Error de micrófono: " + (e.error || ""),"#ffb3b3");
+        if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+          setStatus("Micrófono bloqueado en el navegador.", "#ffb3b3");
+          micOn = false;
+          micToggle.classList.remove("mic-on");
+          try { speechRecognition.stop(); } catch (_) {}
+        } else if (e.error === "no-speech") {
+          setStatus("No he oído nada, prueba otra vez.", "#f1fa8c");
+        } else {
+          setStatus("Error de micrófono: " + (e.error || ""), "#ffb3b3");
+        }
       };
 
       speechRecognition.onend = () => {
@@ -941,10 +965,10 @@
         createConfettiForWord(matchedWord.el);
         updateScore(5);
         updateStreak(true);
-        setStatus("¡Bien! \"" + matchedWord.text + "\"","#c3ff99");
+        setStatus("¡Bien! \"" + matchedWord.text + "\"", "#c3ff99");
         removeWordById(matchedWord.id);
       } else {
-        setStatus("Te he oído: \"" + transcript + "\"","#f1fa8c");
+        setStatus("Te he oído: \"" + transcript + "\"", "#f1fa8c");
         updateStreak(false);
       }
     }
@@ -959,17 +983,17 @@
         micOn = false;
         micToggle.classList.remove("mic-on");
         try { speechRecognition.stop(); } catch (_) {}
-        setStatus("Micrófono desactivado.","#ffb3b3");
+        setStatus("Micrófono desactivado.", "#ffb3b3");
       } else {
         micOn = true;
         micToggle.classList.add("mic-on");
         try {
           speechRecognition.start();
-          setStatus("Micrófono escuchando. Di la palabra que cae.","#a1ffce");
+          setStatus("Micrófono escuchando. Di la palabra que cae.", "#a1ffce");
         } catch (e) {
           micOn = false;
           micToggle.classList.remove("mic-on");
-          setStatus("No se pudo activar el micrófono.","#ffb3b3");
+          setStatus("No se pudo activar el micrófono.", "#ffb3b3");
         }
       }
     }
@@ -1004,10 +1028,10 @@
         mediaRecorder.start();
         recordingIndicator.style.display = "block";
         recordBtn.textContent = "Parar";
-        setStatus("Grabando... el juego está en pausa.","#ffb3b3");
+        setStatus("Grabando... el juego está en pausa.", "#ffb3b3");
       } catch (e) {
         console.warn("Record error:", e);
-        setStatus("No se pudo iniciar la grabación.","#ffb3b3");
+        setStatus("No se pudo iniciar la grabación.", "#ffb3b3");
       }
     }
 
@@ -1028,20 +1052,23 @@
 
     function applyWordList() {
       const text = wordsInput.value || "";
-      const lines = text.split(/\r?\n/)
+      const lines = text.split(/
+?
+/)
         .map(l => l.trim())
         .filter(l => l.length > 0);
       if (!lines.length) {
         customWords = null;
-        setStatus("Usando lista básica de palabras.","#a1c4fd");
+        setStatus("Usando lista básica de palabras.", "#a1c4fd");
       } else {
         customWords = lines;
-        setStatus("Usando tu lista personalizada (" + lines.length + " palabras).","#a1ffce");
+        setStatus("Usando tu lista personalizada (" + lines.length + " palabras).", "#a1ffce");
       }
     }
 
     function loadDefaultWordsIntoTextarea() {
-      wordsInput.value = defaultWords.join("\n");
+      wordsInput.value = defaultWords.join("
+");
     }
 
     startGameBtn.addEventListener("click", startGame);
@@ -1072,7 +1099,7 @@
     }, { passive: false });
 
     window.addEventListener("load", () => {
-      setStatus("Pulsa JUGAR y luego el micrófono 🎤","#a1c4fd");
+      setStatus("Pulsa JUGAR y luego el micrófono 🎤", "#a1c4fd");
       loadDefaultWordsIntoTextarea();
       initSpeechRecognition();
     });
