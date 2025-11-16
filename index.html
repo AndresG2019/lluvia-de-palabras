@@ -25,8 +25,6 @@
       outline: none;
     }
 
-    /* ===== CONTENEDOR GENERAL ===== */
-
     #app {
       height: 100vh;
       width: 100vw;
@@ -271,8 +269,6 @@
       color: #ecfdf5;
     }
 
-    /* Menú lateral (hamburguesa) */
-
     #menu-button {
       position: absolute;
       left: 12px;
@@ -294,13 +290,10 @@
       font-size: 1.2rem;
     }
 
-    /* Área de juego */
-
     #play-area {
       position: relative;
       flex: 1;
       overflow: hidden;
-      margin: 0 0 0 0;
     }
 
     .word {
@@ -325,8 +318,6 @@
       60%  { transform: scale(1.3); opacity: 1; }
       100% { transform: scale(0.6); opacity: 0; }
     }
-
-    /* Depósito de estrellas / barra inferior */
 
     #bottom-bar {
       position: relative;
@@ -360,8 +351,6 @@
       font-size: 0.75rem;
       color: #d1fae5;
     }
-
-    /* Panel lateral */
 
     #side-panel {
       position: absolute;
@@ -459,8 +448,6 @@
       font-size: 0.72rem;
     }
 
-    /* Confeti */
-
     .confetti-piece {
       position: fixed;
       width: 6px;
@@ -482,8 +469,6 @@
       }
     }
 
-    /* Utilidades */
-
     .hidden {
       display: none !important;
     }
@@ -492,7 +477,6 @@
 <body>
 <div id="app">
 
-  <!-- PANTALLA DE INICIO -->
   <section id="start-screen">
     <div class="start-card">
       <div class="start-visual"></div>
@@ -526,14 +510,11 @@
     </div>
   </section>
 
-  <!-- PANTALLA DE JUEGO -->
   <section id="game-screen">
-    <!-- Botón menú -->
     <button id="menu-button" title="Abrir panel de control">
       <span>☰</span>
     </button>
 
-    <!-- Barra superior -->
     <div class="top-bar">
       <div class="score-pill">
         <span>Puntos: <strong id="score">0</strong></span>
@@ -545,10 +526,8 @@
       </button>
     </div>
 
-    <!-- Área de juego -->
     <div id="play-area"></div>
 
-    <!-- Barra inferior -->
     <div id="bottom-bar">
       <div>Depósito de estrellas</div>
       <div class="stars-bar">
@@ -557,7 +536,6 @@
       <div id="mic-status">Micrófono apagado. Pulsa 🎤 para activarlo.</div>
     </div>
 
-    <!-- Panel lateral -->
     <aside id="side-panel">
       <div class="panel-section">
         <div class="panel-title">Velocidad</div>
@@ -613,23 +591,20 @@
   const btnLoadDefault = document.getElementById("btn-load-default");
   const btnUseCustom = document.getElementById("btn-use-custom");
 
-  // Estado del juego
   let isRunning = false;
   let isPaused = false;
   let score = 0;
   let streak = 0;
-  let starsProgress = 0; // 0–100
+  let starsProgress = 0;
   let activeWords = [];
   let spawnIntervalId = null;
   let moveIntervalId = null;
   let currentWordList = [];
 
-  // Voz
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognition = null;
   let micOn = false;
 
-  // Lista básica de palabras (sin papá/mamá, etc.)
   const defaultWords = [
     "sol","luz","nube","árbol","río","tren","flor","cielo","mar","arena",
     "libro","risa","parque","nieve","hoja","canto","casa","puente","fuego","lluvia"
@@ -637,20 +612,17 @@
 
   function setInitialWords() {
     currentWordList = defaultWords.slice();
-    wordsInput.value = defaultWords.join("\\n");
+    wordsInput.value = defaultWords.join("\n");
   }
 
-  // Normalizar texto (minúsculas y sin tildes)
   function normalize(text) {
     return text
       .toLowerCase()
       .normalize("NFD")
-      .replace(/\\p{Diacritic}/gu, "")
-      .replace(/[^a-zñ\\s]/g, " ")
+      .replace(/[\u0300-\u036f]/g, "")   // quitar tildes (compatible)
+      .replace(/[^a-zñ\s]/g, " ")
       .trim();
   }
-
-  // ==== Gestión de juego ====
 
   function startGame() {
     startScreen.style.display = "none";
@@ -662,24 +634,21 @@
   }
 
   function resetGame() {
-    // Reset marcadores
     score = 0;
     streak = 0;
     starsProgress = 0;
     updateScore();
     updateStars();
 
-    // Palabras
     clearWords();
     if (!currentWordList || currentWordList.length === 0) {
       currentWordList = defaultWords.slice();
     }
 
-    // Intervalos
     if (spawnIntervalId) clearInterval(spawnIntervalId);
     if (moveIntervalId) clearInterval(moveIntervalId);
 
-    const spawnMs = 2600; // tiempo entre palabras
+    const spawnMs = 2600;
     spawnIntervalId = setInterval(() => {
       if (isPaused || !isRunning) return;
       spawnWord();
@@ -707,7 +676,7 @@
     el.textContent = text;
 
     const areaRect = playArea.getBoundingClientRect();
-    const wordWidth = 80; // aproximado
+    const wordWidth = 80;
     const x = Math.random() * Math.max(10, areaRect.width - wordWidth - 20);
     const y = -40;
 
@@ -730,14 +699,13 @@
 
   function moveWords() {
     const areaRect = playArea.getBoundingClientRect();
-    const baseStep = 0.9; // px por tick
+    const baseStep = 0.9;
     activeWords.slice().forEach((wordObj) => {
       wordObj.y += baseStep * wordObj.speed;
       if (wordObj.el) {
         wordObj.el.style.top = wordObj.y + "px";
       }
       if (wordObj.y > areaRect.height + 20) {
-        // palabra perdida
         removeWord(wordObj, false);
         streak = 0;
         updateScore();
@@ -776,8 +744,6 @@
     }
   }
 
-  // ==== Micrófono y reconocimiento ====
-
   function setupRecognition() {
     if (!SpeechRecognition) {
       micStatus.textContent = "Este navegador no admite reconocimiento de voz. Prueba con Chrome.";
@@ -807,7 +773,6 @@
 
     recognition.onend = () => {
       if (micOn) {
-        // A veces se detiene solo: lo reanudamos
         try { recognition.start(); } catch (e) {}
       }
     };
@@ -833,8 +798,6 @@
     }
   }
 
-  // ==== Confeti ====
-
   function createConfetti(x, y) {
     const colors = ["#facc15","#f97316","#22c55e","#38bdf8","#e879f9","#f472b6"];
     const count = 20;
@@ -855,8 +818,6 @@
     }
   }
 
-  // ==== Panel lateral / pausa ====
-
   function openPanel() {
     sidePanel.classList.add("open");
     isPaused = true;
@@ -868,8 +829,6 @@
     isPaused = false;
     gameScreen.classList.remove("paused");
   }
-
-  // ==== Eventos ====
 
   btnStart.addEventListener("click", startGame);
 
@@ -883,17 +842,16 @@
 
   speedSlider.addEventListener("input", () => {
     speedLabel.textContent = speedSlider.value;
-    // Actualizar velocidad de palabras activas
     const val = parseInt(speedSlider.value, 10) || 3;
     activeWords.forEach(w => w.speed = val);
   });
 
   btnLoadDefault.addEventListener("click", () => {
-    wordsInput.value = defaultWords.join("\\n");
+    wordsInput.value = defaultWords.join("\n");
   });
 
   btnUseCustom.addEventListener("click", () => {
-    const lines = wordsInput.value.split(/\\r?\\n/).map(l => normalize(l)).filter(Boolean);
+    const lines = wordsInput.value.split(/\r?\n/).map(l => normalize(l)).filter(Boolean);
     if (lines.length === 0) {
       currentWordList = defaultWords.slice();
     } else {
@@ -904,17 +862,13 @@
 
   micToggle.addEventListener("click", toggleMic);
 
-  // Cerrar panel si se hace clic fuera (en móvil es útil)
   gameScreen.addEventListener("click", (e) => {
     if (sidePanel.classList.contains("open")) {
-      // si el clic no es dentro del panel ni en el botón
       if (!sidePanel.contains(e.target) && e.target !== menuButton) {
         closePanel();
       }
     }
   });
-
-  // ==== Inicio ====
 
   setInitialWords();
   setupRecognition();
