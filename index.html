@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lluvia de Palabras</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #151a2c;
+      --accent: #ffb347;
+      --accent-2: #8be9fd;
+      --accent-3: #ff79c6;
+      --text: #f8f8f2;
+      --danger: #ff5555;
+      --success: #50fa7b;
+      --panel-width: 280px;
+      --confetti-size: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #283048 0%, #141e30 40%, #05070f 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      z-index: 20;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+      pointer-events: none;
+    }
+
+    .top-bar > * {
+      pointer-events: auto;
+    }
+
+    #menuToggle {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #menuToggle:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .top-info {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 10px;
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+      align-items: center;
+    }
+
+    .top-info span {
+      white-space: nowrap;
+    }
+
+    #micToggle {
+      border-radius: 999px;
+      border: none;
+      width: 36px;
+      height: 36px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      color: var(--danger);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #micToggle.mic-on {
+      color: var(--success);
+      box-shadow: 0 0 12px rgba(80, 250, 123, 0.6);
+    }
+
+    main {
+      position: relative;
+      flex: 1;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding-top: 52px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    #homeScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 70px 20px 20px;
+      background: radial-gradient(circle at top, #ffe29f 0%, #ffa99f 20%, #67b26f 60%, #141e30 100%);
+    }
+
+    .home-card {
+      background: rgba(0,0,0,0.55);
+      padding: 22px 18px 20px;
+      border-radius: 20px;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 14px 45px rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px);
+    }
+
+    .home-title {
+      font-size: 28px;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    .home-cover {
+      margin-bottom: 10px;
+    }
+
+    .home-cover img {
+      max-width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: block;
+      margin: 0 auto 8px;
+    }
+
+    .home-cover small {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .rainbow-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      margin: 8px auto 16px;
+      background: linear-gradient(90deg,
+        #ff0000,
+        #ff7f00,
+        #ffff00,
+        #00ff00,
+        #0000ff,
+        #4b0082,
+        #8f00ff
+      );
+      box-shadow: 0 0 12px rgba(255,255,255,0.7);
+    }
+
+    .home-quote {
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      opacity: 0.95;
+    }
+
+    .home-sign {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-bottom: 18px;
+    }
+
+    .home-sign strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .home-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ffb347, #ff7f50);
+      color: #1b1320;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.55);
+    }
+
+    .btn-secondary {
+      background: rgba(0,0,0,0.6);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0,0,0,0.7);
+    }
+
+    #gameScreen {
+      display: flex;
+      flex-direction: column;
+      padding-top: 52px;
+    }
+
+    .game-area {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #364f6b 0%, #141e30 40%, #05070f 100%);
+    }
+
+    .game-area.paused::after {
+      content: "PAUSA";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      letter-spacing: 0.4em;
+      color: rgba(255,255,255,0.18);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .word {
+      position: absolute;
+      top: -40px;
+      font-size: 18px;
+      padding: 6px 12px;
+      background: rgba(0,0,0,0.55);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      white-space: nowrap;
+      transform: translateX(-50%);
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+    }
+
+    .word.matched {
+      background: rgba(80, 250, 123, 0.1);
+      border-color: var(--success);
+      box-shadow: 0 0 14px rgba(80, 250, 123, 0.7);
+    }
+
+    @keyframes fall {
+      from { transform: translate3d(-50%, -40px, 0); }
+      to   { transform: translate3d(-50%, calc(100vh + 40px), 0); }
+    }
+
+    .bottom-bar {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4));
+      gap: 10px;
+    }
+
+    .meter-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .meter-label {
+      opacity: 0.85;
+    }
+
+    .meter {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .meter-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg,
+        #ff9a9e,
+        #fad0c4,
+        #f6d365,
+        #fda085,
+        #fbc2eb,
+        #a1c4fd
+      );
+      transition: width 0.25s ease-out;
+    }
+
+    #statusText {
+      font-size: 12px;
+      min-width: 110px;
+      text-align: right;
+      opacity: 0.8;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.05), rgba(0,0,0,0.7));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 15;
+    }
+
+    .overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .side-panel {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: -var(--panel-width);
+      width: var(--panel-width);
+      background: rgba(10,10,20,0.96);
+      box-shadow: -4px 0 18px rgba(0,0,0,0.7);
+      padding: 60px 14px 14px;
+      z-index: 30;
+      transition: right 0.22s ease-out;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .side-panel.open {
+      right: 0;
+    }
+
+    .panel-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: rgba(0,0,0,0.5);
+      border-radius: 999px;
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 24px;
+      text-align: center;
+    }
+
+    .panel-section {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .panel-section h3 {
+      font-size: 13px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      opacity: 0.9;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 2px;
+      opacity: 0.9;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 60px;
+      resize: vertical;
+      font-size: 12px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text);
+      padding: 4px 6px;
+    }
+
+    .panel-small-text {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    .panel-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .btn-xs {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-xs.primary {
+      background: rgba(255,255,255,0.12);
+      color: var(--text);
+    }
+
+    .btn-xs.outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .recording-indicator {
+      font-size: 11px;
+      color: var(--danger);
+      margin-top: 4px;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .bird {
+      position: absolute;
+      top: 14%;
+      left: -40px;
+      font-size: 22px;
+      pointer-events: none;
+      animation: fly 12s linear infinite;
+      opacity: 0.95;
+      filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+      z-index: 5;
+    }
+
+    @keyframes fly {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(100vw + 80px)); }
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: var(--confetti-size);
+      height: var(--confetti-size);
+      border-radius: 2px;
+      opacity: 0;
+      pointer-events: none;
+      animation: confetti-fall 700ms ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        opacity: 1;
+        transform: translate3d(0,0,0);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(var(--dx), var(--dy), 0) rotate(260deg);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .home-card {
+        border-radius: 18px;
+      }
+      .home-title {
+        font-size: 24px;
+      }
+      .top-info {
+        display: none;
+      }
+      .side-panel {
+        width: 82vw;
+        right: -82vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="overlay" id="pauseOverlay"></div>
+
+    <header class="top-bar">
+      <button id="menuToggle" aria-label="Abrir menú">☰</button>
+      <div class="top-info">
+        <span>Puntos: <strong id="score">0</strong></span>
+        <span>Racha: <strong id="streak">0</strong></span>
+        <span>Modo: <strong id="modeLabel">Lluvia</strong></span>
+      </div>
+      <button id="micToggle" class="mic-off" title="Micrófono">
+        🎤
+      </button>
+    </header>
+
+    <aside id="sidePanel" class="side-panel">
+      <button id="closePanelBtn" class="panel-close-btn" aria-label="Cerrar menú">✕</button>
+
+      <div class="panel-section">
+        <h3>Velocidad</h3>
+        <label for="speedRange">Tiempo de caída</label>
+        <input id="speedRange" type="range" min="1" max="5" value="3" />
+        <div class="panel-small-text">
+          1 = más lento · 5 = más rápido
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Palabras</h3>
+        <label for="wordsInput">Lista personalizada (una por línea)</label>
+        <textarea id="wordsInput" spellcheck="false"></textarea>
+        <div class="panel-small-text">
+          Si lo dejas vacío, se usa la lista básica.
+        </div>
+        <div class="panel-buttons">
+          <button class="btn-xs outline" id="loadDefaultWords">Cargar básicas</button>
+          <button class="btn-xs primary" id="applyWords">Usar estas</button>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3>Grabación</h3>
+        <div class="panel-small-text">
+          Graba una frase para que el peque pueda escucharse. Mientras grabas, el juego se pausa.
+        </div>
+        <div class="panel-buttons">
+          <button class="btn-xs primary" id="recordBtn">Grabar</button>
+        </div>
+        <div id="recordingIndicator" class="recording-indicator" style="display:none;">
+          ⏺ Grabando... toca de nuevo para parar.
+        </div>
+        <audio id="playbackAudio" controls></audio>
+      </div>
+
+      <div class="panel-section">
+        <h3>Ayuda</h3>
+        <div class="panel-small-text">
+          • Micrófono: pulsa 🎤 para que las palabras exploten al decirlas.<br />
+          • El panel pausa el juego al abrirse.<br />
+          • Diseñado para usarse con móvil en vertical u horizontal.
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <section id="homeScreen" class="screen active">
+        <div class="home-card">
+          <h1 class="home-title">Lluvia de Palabras</h1>
+
+          <div class="home-cover">
+            <img src="portada-kayak.jpg" alt="Kayak en el agua" />
+            <small>Fotografía de portada · puedes sustituir este archivo por tu propio kayak.</small>
+          </div>
+
+          <div class="rainbow-bar"></div>
+
+          <p class="home-quote">
+            La lectura mejora nuestro intelecto y ensancha la forma en que miramos el mundo.
+          </p>
+          <p class="home-sign">
+            Un juego de lectura en voz alta para todas las familias posibles.
+            <strong>Andrés L. Belluga</strong>
+          </p>
+          <div class="home-actions">
+            <button id="startGameBtn" class="btn btn-primary">
+              🌧️ Jugar en modo lluvia
+            </button>
+            <button id="openPanelFromHome" class="btn btn-secondary">
+              ⚙️ Ajustes y palabras
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen">
+        <div class="game-area" id="gameArea">
+          <div class="bird" id="bird">🕊️</div>
+        </div>
+        <div class="bottom-bar">
+          <div class="meter-wrapper">
+            <div class="meter-label">Depósito de estrellas</div>
+            <div class="meter">
+              <div class="meter-fill" id="rewardFill"></div>
+            </div>
+          </div>
+          <div id="statusText"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const homeScreen = document.getElementById("homeScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const gameArea = document.getElementById("gameArea");
+    const scoreEl = document.getElementById("score");
+    const streakEl = document.getElementById("streak");
+    const modeLabel = document.getElementById("modeLabel");
+    const rewardFill = document.getElementById("rewardFill");
+    const statusText = document.getElementById("statusText");
+    const pauseOverlay = document.getElementById("pauseOverlay");
+    const sidePanel = document.getElementById("sidePanel");
+    const menuToggle = document.getElementById("menuToggle");
+    const closePanelBtn = document.getElementById("closePanelBtn");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const openPanelFromHome = document.getElementById("openPanelFromHome");
+    const speedRange = document.getElementById("speedRange");
+    const wordsInput = document.getElementById("wordsInput");
+    const loadDefaultWordsBtn = document.getElementById("loadDefaultWords");
+    const applyWordsBtn = document.getElementById("applyWords");
+    const micToggle = document.getElementById("micToggle");
+    const recordBtn = document.getElementById("recordBtn");
+    const recordingIndicator = document.getElementById("recordingIndicator");
+    const playbackAudio = document.getElementById("playbackAudio");
+    const birdEl = document.getElementById("bird");
+
+    let isRunning = false;
+    let isPaused = false;
+    let score = 0;
+    let streak = 0;
+    let activeWords = [];
+    let spawnTimer = null;
+    let speechRecognition = null;
+    let micOn = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    const defaultWords = [
+      "sol","luz","nube","árbol","hoja","gato","perro","patio","jardín","cielo",
+      "libro","cuento","silla","mesa","puerta","ventana","camino","playa","río","flor",
+      "estrella","naranja","verde","azul","rojo","noche","día","tren","coche","barco",
+      "parque","escuela","colegio","amiga","amigo","equipo","abrazo","risa","voz",
+      "canción","palabra","pluma","tierra"
+    ];
+    let customWords = null;
+
+    function randomBetween(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function normalize(str) {
+      return str
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function getCurrentWordList() {
+      if (Array.isArray(customWords) && customWords.length > 0) return customWords;
+      return defaultWords;
+    }
+
+    function speedToConfig(value) {
+      const v = Number(value) || 3;
+      const fallDuration = 9000 - (v - 1) * 1500;
+      const spawnEvery = 2600 - (v - 1) * 350;
+      return { fallDuration, spawnEvery };
+    }
+
+    function setStatus(msg, color) {
+      statusText.textContent = msg || "";
+      statusText.style.color = color || "rgba(255,255,255,0.9)";
+    }
+
+    function updateScore(delta) {
+      score = Math.max(0, score + delta);
+      scoreEl.textContent = score;
+      const meterPercent = Math.min(100, (score % 100) || (score > 0 ? 5 : 0));
+      rewardFill.style.width = meterPercent + "%";
+    }
+
+    function updateStreak(hit) {
+      if (hit) streak += 1;
+      else streak = 0;
+      streakEl.textContent = streak;
+    }
+
+    function clearWords() {
+      activeWords.forEach(w => {
+        if (w.el && w.el.parentNode) w.el.parentNode.removeChild(w.el);
+      });
+      activeWords = [];
+    }
+
+    function goToGameScreen() {
+      homeScreen.classList.remove("active");
+      gameScreen.classList.add("active");
+    }
+
+    function startGame() {
+      goToGameScreen();
+      isRunning = true;
+      isPaused = false;
+      gameArea.classList.remove("paused");
+      pauseOverlay.classList.remove("visible");
+      score = 0;
+      streak = 0;
+      scoreEl.textContent = "0";
+      streakEl.textContent = "0";
+      rewardFill.style.width = "0%";
+      modeLabel.textContent = "Lluvia";
+      clearWords();
+      setStatus("Di la palabra en voz alta para hacerla explotar 🎈","#a1c4fd");
+      startSpawning();
+    }
+
+    function setPaused(paused) {
+      isPaused = paused;
+      if (isPaused) {
+        gameArea.classList.add("paused");
+        pauseOverlay.classList.add("visible");
+      } else {
+        gameArea.classList.remove("paused");
+        pauseOverlay.classList.remove("visible");
+      }
+    }
+
+    function spawnWord() {
+      if (!isRunning || isPaused) return;
+      const words = getCurrentWordList();
+      if (!words.length) return;
+
+      const text = words[Math.floor(Math.random() * words.length)];
+      const wordEl = document.createElement("div");
+      wordEl.className = "word";
+      wordEl.textContent = text;
+
+      const areaRect = gameArea.getBoundingClientRect();
+      const minX = 12;
+      const maxX = areaRect.width - 12;
+      const x = randomBetween(minX, maxX);
+      wordEl.style.left = x + "px";
+
+      const { fallDuration } = speedToConfig(speedRange.value);
+      wordEl.style.animationDuration = fallDuration + "ms";
+
+      const id = Date.now() + "-" + Math.random().toString(16).slice(2);
+      const wordObj = { id, text, el: wordEl, matched: false };
+      activeWords.push(wordObj);
+
+      wordEl.addEventListener("animationend", () => {
+        if (!wordObj.matched) {
+          updateStreak(false);
+          setStatus("Se escapó \"" + text + "\"","#ffb3b3");
+        }
+        removeWordById(id);
+      });
+
+      gameArea.appendChild(wordEl);
+    }
+
+    function removeWordById(id) {
+      const index = activeWords.findIndex(w => w.id === id);
+      if (index !== -1) {
+        const [w] = activeWords.splice(index, 1);
+        if (w.el && w.el.parentNode) w.el.parentNode.removeChild(w.el);
+      }
+    }
+
+    function clearSpawning() {
+      if (spawnTimer) {
+        clearInterval(spawnTimer);
+        spawnTimer = null;
+      }
+    }
+
+    function startSpawning() {
+      clearSpawning();
+      const { spawnEvery } = speedToConfig(speedRange.value);
+      spawnTimer = setInterval(spawnWord, spawnEvery);
+    }
+
+    function createConfettiForWord(wordEl) {
+      const rect = wordEl.getBoundingClientRect();
+      const areaRect = gameArea.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2 - areaRect.left;
+      const originY = rect.top + rect.height / 2 - areaRect.top;
+
+      const colors = ["#ff9a9e","#fad0c4","#f6d365","#fda085","#a1c4fd","#c3ff99"];
+
+      for (let i = 0; i < 18; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = originX + "px";
+        piece.style.top = originY + "px";
+        const dx = randomBetween(-80, 80);
+        const dy = randomBetween(-30, 80);
+        piece.style.setProperty("--dx", dx + "px");
+        piece.style.setProperty("--dy", dy + "px");
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        gameArea.appendChild(piece);
+        setTimeout(() => {
+          if (piece.parentNode) piece.parentNode.removeChild(piece);
+        }, 750);
+      }
+    }
+
+    function checkBirdCollisions() {
+      if (!birdEl || !activeWords.length) return;
+      const birdRect = birdEl.getBoundingClientRect();
+      activeWords.slice().forEach(wordObj => {
+        if (!wordObj.el) return;
+        const r = wordObj.el.getBoundingClientRect();
+        const overlap =
+          r.left < birdRect.right &&
+          r.right > birdRect.left &&
+          r.top < birdRect.bottom &&
+          r.bottom > birdRect.top;
+        if (overlap) {
+          wordObj.matched = true;
+          createConfettiForWord(wordObj.el);
+          updateScore(3);
+          updateStreak(true);
+          setStatus("El pajarito explotó \"" + wordObj.text + "\" 🕊️","#a1ffce");
+          removeWordById(wordObj.id);
+        }
+      });
+    }
+
+    setInterval(checkBirdCollisions, 220);
+
+    function initSpeechRecognition() {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        setStatus("Este navegador no soporta reconocimiento de voz.","#ffb3b3");
+        micToggle.disabled = true;
+        return;
+      }
+
+      speechRecognition = new SpeechRecognition();
+      speechRecognition.lang = "es-ES";
+      speechRecognition.continuous = true;
+      speechRecognition.interimResults = false;
+
+      speechRecognition.onresult = (event) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const res = event.results[i];
+          if (!res.isFinal) continue;
+          const transcript = normalize(res[0].transcript || "");
+          if (!transcript) continue;
+          handleTranscript(transcript);
+        }
+      };
+
+      speechRecognition.onerror = (e) => {
+        console.warn("Speech error:", e);
+        setStatus("Error de micrófono: " + (e.error || ""),"#ffb3b3");
+      };
+
+      speechRecognition.onend = () => {
+        if (micOn) {
+          try { speechRecognition.start(); } catch (_) {}
+        }
+      };
+    }
+
+    function handleTranscript(transcript) {
+      if (!isRunning || isPaused) return;
+      let matchedWord = null;
+      for (const w of activeWords) {
+        if (!w.el) continue;
+        const normalized = normalize(w.text);
+        if (normalized === transcript) {
+          matchedWord = w;
+          break;
+        }
+      }
+
+      if (matchedWord) {
+        matchedWord.matched = true;
+        matchedWord.el.classList.add("matched");
+        createConfettiForWord(matchedWord.el);
+        updateScore(5);
+        updateStreak(true);
+        setStatus("¡Bien! \"" + matchedWord.text + "\"","#c3ff99");
+        removeWordById(matchedWord.id);
+      } else {
+        setStatus("Te he oído: \"" + transcript + "\"","#f1fa8c");
+        updateStreak(false);
+      }
+    }
+
+    function toggleMic() {
+      if (!speechRecognition) {
+        initSpeechRecognition();
+        if (!speechRecognition) return;
+      }
+
+      if (micOn) {
+        micOn = false;
+        micToggle.classList.remove("mic-on");
+        try { speechRecognition.stop(); } catch (_) {}
+        setStatus("Micrófono desactivado.","#ffb3b3");
+      } else {
+        micOn = true;
+        micToggle.classList.add("mic-on");
+        try {
+          speechRecognition.start();
+          setStatus("Micrófono escuchando. Di la palabra que cae.","#a1ffce");
+        } catch (e) {
+          micOn = false;
+          micToggle.classList.remove("mic-on");
+          setStatus("No se pudo activar el micrófono.","#ffb3b3");
+        }
+      }
+    }
+
+    async function toggleRecording() {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        recordingIndicator.style.display = "none";
+        recordBtn.textContent = "Grabar";
+        setPaused(false);
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: "audio/webm" });
+          playbackAudio.src = URL.createObjectURL(blob);
+          stream.getTracks().forEach(t => t.stop());
+        };
+
+        setPaused(true);
+        if (micOn) toggleMic();
+
+        mediaRecorder.start();
+        recordingIndicator.style.display = "block";
+        recordBtn.textContent = "Parar";
+        setStatus("Grabando... el juego está en pausa.","#ffb3b3");
+      } catch (e) {
+        console.warn("Record error:", e);
+        setStatus("No se pudo iniciar la grabación.","#ffb3b3");
+      }
+    }
+
+    function openPanel() {
+      sidePanel.classList.add("open");
+      setPaused(true);
+    }
+
+    function closePanel() {
+      sidePanel.classList.remove("open");
+      setPaused(false);
+    }
+
+    function togglePanel() {
+      if (sidePanel.classList.contains("open")) closePanel();
+      else openPanel();
+    }
+
+    function applyWordList() {
+      const text = wordsInput.value || "";
+      const lines = text.split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+      if (!lines.length) {
+        customWords = null;
+        setStatus("Usando lista básica de palabras.","#a1c4fd");
+      } else {
+        customWords = lines;
+        setStatus("Usando tu lista personalizada (" + lines.length + " palabras).","#a1ffce");
+      }
+    }
+
+    function loadDefaultWordsIntoTextarea() {
+      wordsInput.value = defaultWords.join("\n");
+    }
+
+    startGameBtn.addEventListener("click", startGame);
+    openPanelFromHome.addEventListener("click", () => {
+      goToGameScreen();
+      if (!isRunning) startGame();
+      openPanel();
+    });
+    menuToggle.addEventListener("click", togglePanel);
+    closePanelBtn.addEventListener("click", closePanel);
+
+    pauseOverlay.addEventListener("click", () => {
+      if (sidePanel.classList.contains("open")) closePanel();
+    });
+
+    speedRange.addEventListener("input", () => {
+      if (isRunning) startSpawning();
+    });
+
+    loadDefaultWordsBtn.addEventListener("click", loadDefaultWordsIntoTextarea);
+    applyWordsBtn.addEventListener("click", applyWordList);
+    micToggle.addEventListener("click", toggleMic);
+    recordBtn.addEventListener("click", toggleRecording);
+
+    document.addEventListener("touchmove", (e) => {
+      if (e.target.closest("textarea") || e.target.closest(".side-panel")) return;
+      e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener("load", () => {
+      setStatus("Pulsa JUGAR y luego el micrófono 🎤","#a1c4fd");
+      loadDefaultWordsIntoTextarea();
+      initSpeechRecognition();
+    });
+  </script>
+</body>
+</html>
