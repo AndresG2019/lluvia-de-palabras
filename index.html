@@ -38,7 +38,6 @@
                   linear-gradient(to bottom, #8fd3ff, #cde8ff);
       z-index: 10;
     }
-
     .start-card {
       max-width: 720px;
       width: 100%;
@@ -56,25 +55,13 @@
     .start-visual {
       position: relative;
       min-height: 220px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0)),
-        linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0)),
-        linear-gradient(to bottom, #60a5fa, #0f172a);
-      background-blend-mode: screen, screen, normal;
-    }
-    .start-visual::after {
-      content: "Aquí irá tu foto del kayak (portada)";
-      position: absolute;
-      inset: 18px;
-      border-radius: 18px;
-      border: 2px dashed rgba(248, 250, 252, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 12px;
-      font-size: 0.9rem;
-      color: rgba(241, 245, 249, 0.9);
+      /* aquí puedes cambiar kayak-portada.jpg por el nombre real de tu imagen */
+      background-image:
+        linear-gradient(to bottom, rgba(15,23,42,0.2), rgba(15,23,42,0.75)),
+        url("kayak-portada.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     .start-content {
@@ -278,12 +265,12 @@
       transform-origin: center;
     }
     .word.pop {
-      animation: popOut 0.2s ease-out forwards;
+      animation: popOut 0.15s ease-out forwards;
     }
     @keyframes popOut {
       0%   { transform: scale(1); opacity: 1; }
       60%  { transform: scale(1.25); opacity: 1; }
-      100% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(0.4); opacity: 0; }
     }
 
     /* Suelo / jardín de estrellas */
@@ -332,7 +319,7 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: 270px;
+      width: 280px;
       max-width: 80%;
       background: rgba(15, 23, 42, 0.98);
       box-shadow: 10px 0 30px rgba(15, 23, 42, 0.9);
@@ -344,6 +331,7 @@
       flex-direction: column;
       gap: 10px;
       font-size: 0.8rem;
+      overflow-y: auto; /* para ver todas las secciones */
     }
     #side-panel.open { transform: translateX(0); }
     .panel-section {
@@ -424,6 +412,21 @@
       margin-top: 4px;
     }
 
+    .select-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .select-row select {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      border-radius: 999px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      padding: 4px 6px;
+      font-size: 0.76rem;
+    }
+
     /* Confeti */
 
     .confetti-piece {
@@ -433,7 +436,7 @@
       border-radius: 2px;
       opacity: 0.9;
       pointer-events: none;
-      animation: confetti-fall 1s ease-out forwards;
+      animation: confetti-fall 0.7s ease-out forwards;
       z-index: 50;
     }
     @keyframes confetti-fall {
@@ -514,6 +517,34 @@
 
     <aside id="side-panel">
       <div class="panel-section">
+        <div class="panel-title">Idioma</div>
+        <div class="panel-sub">Selecciona el idioma del reconocimiento de voz.</div>
+        <div class="select-row">
+          <select id="language-select">
+            <option value="es-ES">Español</option>
+            <option value="en-GB">Inglés</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Modo y nivel</div>
+        <div class="panel-sub">Elige el tipo de lectura y la dificultad.</div>
+        <div class="select-row">
+          <select id="mode-select">
+            <option value="palabras">Palabras</option>
+            <option value="frases">Frases</option>
+            <option value="fragmentos">Fragmentos</option>
+          </select>
+          <select id="level-select">
+            <option value="1">Nivel 1</option>
+            <option value="2">Nivel 2</option>
+            <option value="3">Nivel 3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel-section">
         <div class="panel-title">Velocidad</div>
         <div class="panel-sub">Tiempo de caída (1 = más lento · 5 = más rápido)</div>
         <div class="slider-row">
@@ -523,13 +554,13 @@
       </div>
 
       <div class="panel-section">
-        <div class="panel-title">Palabras</div>
+        <div class="panel-title">Palabras / frases visibles</div>
         <div class="panel-sub">
-          Lista personalizada (una palabra por línea). Si lo dejas vacío, se usará la lista básica.
+          Lista actual (una línea por elemento). Puedes editarla y pulsar “Usar estas”.
         </div>
         <textarea id="words-input"></textarea>
         <div class="panel-buttons">
-          <button id="btn-load-default" class="btn-small">Cargar básicas</button>
+          <button id="btn-load-default" class="btn-small">Recargar modo/nivel</button>
           <button id="btn-use-custom" class="btn-small primary">Usar estas</button>
         </div>
       </div>
@@ -552,7 +583,7 @@
           <li>El panel pausa el juego al abrirse.</li>
           <li>Pulsa 🎤 para que las palabras exploten al decirlas.</li>
           <li>Funciona en ordenador y móvil (vertical u horizontal).</li>
-          <li>Puedes cambiar la lista de palabras o usar frases más largas.</li>
+          <li>Puedes cambiar modo, nivel y lista en cualquier momento.</li>
         </ul>
       </div>
     </aside>
@@ -580,6 +611,9 @@
   const btnRecord = document.getElementById("btn-record");
   const btnStopRecord = document.getElementById("btn-stop-record");
   const recordingPlayer = document.getElementById("recording-player");
+  const languageSelect = document.getElementById("language-select");
+  const modeSelect = document.getElementById("mode-select");
+  const levelSelect = document.getElementById("level-select");
 
   let isRunning = false;
   let isPaused = false;
@@ -599,15 +633,51 @@
   let recordedChunks = [];
   let wasMicOnBeforeRecording = false;
 
-  const defaultWords = [
-    "sol","luz","nube","árbol","río","tren","flor","cielo","mar","arena",
-    "libro","risa","parque","nieve","hoja","canto","casa","puente","fuego","lluvia"
-  ];
-
-  function setInitialWords() {
-    currentWordList = defaultWords.slice();
-    wordsInput.value = defaultWords.join("\n");
-  }
+  const contentSets = {
+    "palabras-1": [
+      "sol","luz","nube","mar","río","tren","flor","cielo","gato","árbol"
+    ],
+    "palabras-2": [
+      "ventana","camino","nieve","puente","maleta","carrito","cuento","playa","camiseta","montaña"
+    ],
+    "palabras-3": [
+      "mariposa","cascabel","farolillo","piruleta","barquito","sombrerito","jardinería","bicicleta","murmullo","brújula"
+    ],
+    "frases-1": [
+      "leo en voz alta",
+      "veo el sol",
+      "la nube pasa",
+      "salta la rana",
+      "corre el tren"
+    ],
+    "frases-2": [
+      "una flor mira al cielo",
+      "la luna escucha en silencio",
+      "tres hojas bailan despacio",
+      "una piedra guarda secretos",
+      "el río canta suave"
+    ],
+    "frases-3": [
+      "el gato duerme sobre el tejado azul",
+      "un barco pequeño sueña con mares lejanos",
+      "la tarde se llena de pasos y risas",
+      "la ciudad enciende sus luces despacio",
+      "un abrazo detiene el ruido del mundo"
+    ],
+    "fragmentos-1": [
+      "Había una vez un niño que miraba la lluvia caer.",
+      "En la casa de la colina siempre olía a pan recién hecho.",
+      "El perro movía la cola cada vez que veía la mochila."
+    ],
+    "fragmentos-2": [
+      "Todas las noches alguien contaba una historia distinta, aunque nadie recordaba el principio.",
+      "El autobús avanzaba despacio y la ventana era un cine silencioso de árboles y coches."
+    ],
+    "fragmentos-3": [
+      "En el parque, las conversaciones se mezclaban con el ruido de las hojas y el crujido de las bicicletas sobre la grava.",
+      "A veces, bastaba con leer una sola línea para que todo el día cambiara de color, como si alguien encendiera una luz desde dentro."
+    ]
+  };
 
   function normalize(text) {
     return text
@@ -616,6 +686,23 @@
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-zñ\s]/g, " ")
       .trim();
+  }
+
+  function getKeyForSelection() {
+    const mode = modeSelect.value;
+    const level = levelSelect.value;
+    return mode + "-" + level;
+  }
+
+  function applyModeLevelToWordsBox() {
+    const key = getKeyForSelection();
+    const list = contentSets[key] || [];
+    currentWordList = list.slice();
+    wordsInput.value = list.join("\n");
+  }
+
+  function setInitialWords() {
+    applyModeLevelToWordsBox();
   }
 
   /* ===== JUEGO ===== */
@@ -638,7 +725,7 @@
 
     clearWords();
     if (!currentWordList || currentWordList.length === 0) {
-      currentWordList = defaultWords.slice();
+      applyModeLevelToWordsBox();
     }
 
     if (spawnIntervalId) clearInterval(spawnIntervalId);
@@ -672,7 +759,7 @@
     el.textContent = text;
 
     const areaRect = playArea.getBoundingClientRect();
-    const wordWidth = 90;
+    const wordWidth = 130;
     const x = Math.random() * Math.max(10, areaRect.width - wordWidth - 20);
     const y = -40;
 
@@ -729,7 +816,7 @@
         if (wordObj.el && wordObj.el.parentNode) {
           wordObj.el.parentNode.removeChild(wordObj.el);
         }
-      }, 180);
+      }, 120);
     }
     if (addScore) {
       score += 10;
@@ -750,8 +837,8 @@
     }
     recognition = new SpeechRecognition();
     recognition.continuous = true;
-    recognition.interimResults = true; // para reaccionar antes
-    recognition.lang = "es-ES";
+    recognition.interimResults = true; // resultados parciales
+    recognition.lang = languageSelect.value || "es-ES";
 
     recognition.onresult = (event) => {
       if (!isRunning || isPaused) return;
@@ -780,6 +867,20 @@
     };
   }
 
+  function restartRecognitionLanguage() {
+    if (!recognition) return;
+    const wasOn = micOn;
+    if (wasOn) {
+      micOn = false;
+      recognition.stop();
+    }
+    recognition.lang = languageSelect.value || "es-ES";
+    if (wasOn) {
+      micOn = true;
+      try { recognition.start(); } catch (e) {}
+    }
+  }
+
   function toggleMic() {
     if (!SpeechRecognition) return;
     micOn = !micOn;
@@ -802,9 +903,8 @@
       return;
     }
 
-    // Pausamos juego y guardamos estado del mic
     if (!isPaused) {
-      openPanel(); // por si acaso
+      openPanel();
     }
     wasMicOnBeforeRecording = micOn;
     if (micOn) {
@@ -848,7 +948,6 @@
       btnRecord.disabled = false;
       btnStopRecord.disabled = true;
       micStatus.textContent = "Grabación terminada. Puedes reproducirla abajo.";
-      // Restaurar micrófono de explosión si estaba encendido
       if (wasMicOnBeforeRecording && SpeechRecognition) {
         micOn = true;
         try { recognition.start(); } catch (e) {}
@@ -876,7 +975,7 @@
       document.body.appendChild(piece);
       setTimeout(() => {
         if (piece.parentNode) piece.parentNode.removeChild(piece);
-      }, 900);
+      }, 680);
     }
   }
 
@@ -906,7 +1005,6 @@
     }
   });
 
-  // Cerrar panel pulsando fuera (pero sin fastidiar el botón de menú)
   gameScreen.addEventListener("click", (e) => {
     if (!sidePanel.classList.contains("open")) return;
     if (sidePanel.contains(e.target)) return;
@@ -921,13 +1019,14 @@
   });
 
   btnLoadDefault.addEventListener("click", () => {
-    wordsInput.value = defaultWords.join("\n");
+    applyModeLevelToWordsBox();
+    resetGame();
   });
 
   btnUseCustom.addEventListener("click", () => {
     const lines = wordsInput.value.split(/\r?\n/).map(l => normalize(l)).filter(Boolean);
     if (lines.length === 0) {
-      currentWordList = defaultWords.slice();
+      applyModeLevelToWordsBox();
     } else {
       currentWordList = lines;
     }
@@ -938,6 +1037,20 @@
 
   btnRecord.addEventListener("click", startRecording);
   btnStopRecord.addEventListener("click", stopRecording);
+
+  languageSelect.addEventListener("change", () => {
+    restartRecognitionLanguage();
+  });
+
+  modeSelect.addEventListener("change", () => {
+    applyModeLevelToWordsBox();
+    resetGame();
+  });
+
+  levelSelect.addEventListener("change", () => {
+    applyModeLevelToWordsBox();
+    resetGame();
+  });
 
   setInitialWords();
   setupRecognition();
