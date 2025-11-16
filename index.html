@@ -5,26 +5,19 @@
   <title>Lluvia de Palabras</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #cde8ff;
       color: #f5f5f5;
       overflow: hidden;
     }
-
     button {
       font-family: inherit;
       cursor: pointer;
       border: none;
       outline: none;
     }
-
     #app {
       height: 100vh;
       width: 100vw;
@@ -56,11 +49,8 @@
       display: grid;
       grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
     }
-
     @media (max-width: 768px) {
-      .start-card {
-        grid-template-columns: 1fr;
-      }
+      .start-card { grid-template-columns: 1fr; }
     }
 
     .start-visual {
@@ -69,20 +59,9 @@
       background:
         linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0)),
         linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0)),
-        linear-gradient(
-          to right,
-          rgba(255, 0, 0, 0.35),
-          rgba(255, 165, 0, 0.4),
-          rgba(255, 255, 0, 0.4),
-          rgba(0, 128, 0, 0.4),
-          rgba(0, 0, 255, 0.4),
-          rgba(75, 0, 130, 0.4),
-          rgba(238, 130, 238, 0.4)
-        ),
-        linear-gradient(to bottom, #3b82f6, #0f172a);
-      background-blend-mode: screen, screen, screen, normal;
+        linear-gradient(to bottom, #60a5fa, #0f172a);
+      background-blend-mode: screen, screen, normal;
     }
-
     .start-visual::after {
       content: "Aquí irá tu foto del kayak (portada)";
       position: absolute;
@@ -104,7 +83,6 @@
       flex-direction: column;
       gap: 14px;
     }
-
     .badge {
       display: inline-flex;
       align-items: center;
@@ -116,25 +94,21 @@
       color: #e0f2fe;
       align-self: flex-start;
     }
-
     .badge span {
       width: 7px;
       height: 7px;
       border-radius: 999px;
       background: #22c55e;
     }
-
     .start-title {
       font-size: 1.6rem;
       line-height: 1.25;
       color: #e5e7eb;
     }
-
     .start-sub {
       font-size: 0.95rem;
       color: #cbd5f5;
     }
-
     .start-quote {
       font-size: 0.9rem;
       color: #9ca3af;
@@ -142,27 +116,23 @@
       padding-left: 10px;
       margin-top: 4px;
     }
-
     .start-author {
       font-size: 0.85rem;
       color: #e5e7eb;
       margin-top: 10px;
     }
-
     .start-author span {
       display: block;
       font-size: 0.8rem;
       color: #9ca3af;
       margin-top: 2px;
     }
-
     .start-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 12px;
     }
-
     .btn-primary {
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
@@ -176,13 +146,11 @@
       box-shadow: 0 10px 25px rgba(22, 163, 74, 0.6);
       transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
     }
-
     .btn-primary:hover {
       transform: translateY(-1px);
       box-shadow: 0 14px 30px rgba(22, 163, 74, 0.7);
       filter: brightness(1.05);
     }
-
     .btn-secondary {
       background: rgba(15, 23, 42, 0.8);
       color: #e5e7eb;
@@ -200,23 +168,34 @@
       display: none;
       flex-direction: column;
       background:
-        radial-gradient(circle at top, rgba(255,255,255,0.35), rgba(255,255,255,0)),
-        linear-gradient(
-          to right,
-          rgba(255, 0, 0, 0.3),
-          rgba(255, 165, 0, 0.3),
-          rgba(255, 255, 0, 0.25),
-          rgba(0, 128, 0, 0.25),
-          rgba(0, 0, 255, 0.3),
-          rgba(75, 0, 130, 0.3),
-          rgba(238, 130, 238, 0.35)
-        ),
-        radial-gradient(circle at bottom, rgba(15, 23, 42, 0.9), #0f172a);
-      background-blend-mode: screen, screen, normal;
+        linear-gradient(to bottom, #a6ddff, #6cbcff 55%, #bbf7d0 70%, #166534 100%);
+    }
+    #game-screen.paused {
+      filter: grayscale(0.2) brightness(0.85);
     }
 
-    #game-screen.paused {
-      filter: grayscale(0.2) brightness(0.8);
+    /* Arcoíris lejano */
+    #rainbow-band {
+      position: absolute;
+      top: 8%;
+      left: -10%;
+      width: 120%;
+      height: 12%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 0, 0, 0.7),
+        rgba(255, 165, 0, 0.7),
+        rgba(255, 255, 0, 0.7),
+        rgba(0, 128, 0, 0.7),
+        rgba(0, 0, 255, 0.7),
+        rgba(75, 0, 130, 0.7),
+        rgba(238, 130, 238, 0.8)
+      );
+      opacity: 0.5;
+      filter: blur(6px);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .top-bar {
@@ -227,7 +206,6 @@
       position: relative;
       z-index: 2;
     }
-
     .score-pill {
       background: linear-gradient(to right, #f97316, #facc15, #22c55e);
       color: #111827;
@@ -238,10 +216,7 @@
       gap: 14px;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
     }
-
-    .score-pill span strong {
-      font-weight: 700;
-    }
+    .score-pill span strong { font-weight: 700; }
 
     #mic-toggle {
       position: absolute;
@@ -257,11 +232,7 @@
       justify-content: center;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.8);
     }
-
-    #mic-toggle span {
-      font-size: 1.1rem;
-    }
-
+    #mic-toggle span { font-size: 1.1rem; }
     #mic-toggle.listening {
       border-color: #22c55e;
       box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4);
@@ -285,15 +256,13 @@
       color: #e5e7eb;
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.8);
     }
-
-    #menu-button span {
-      font-size: 1.2rem;
-    }
+    #menu-button span { font-size: 1.2rem; }
 
     #play-area {
       position: relative;
       flex: 1;
       overflow: hidden;
+      z-index: 1;
     }
 
     .word {
@@ -308,16 +277,16 @@
       border: 1px solid rgba(148, 163, 184, 0.8);
       transform-origin: center;
     }
-
     .word.pop {
-      animation: popOut 0.45s ease-out forwards;
+      animation: popOut 0.2s ease-out forwards;
     }
-
     @keyframes popOut {
       0%   { transform: scale(1); opacity: 1; }
-      60%  { transform: scale(1.3); opacity: 1; }
-      100% { transform: scale(0.6); opacity: 0; }
+      60%  { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(0.5); opacity: 0; }
     }
+
+    /* Suelo / jardín de estrellas */
 
     #bottom-bar {
       position: relative;
@@ -325,8 +294,13 @@
       font-size: 0.8rem;
       color: #e5e7eb;
       z-index: 2;
+      background: linear-gradient(to bottom, rgba(22, 101, 52, 0.2), rgba(22, 101, 52, 0.9));
+      box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.7);
     }
-
+    #bottom-bar-title {
+      font-size: 0.78rem;
+      opacity: 0.9;
+    }
     .stars-bar {
       position: relative;
       height: 10px;
@@ -334,8 +308,8 @@
       background: rgba(15, 23, 42, 0.8);
       overflow: hidden;
       margin-top: 4px;
+      border: 1px solid rgba(34,197,94,0.5);
     }
-
     .stars-fill {
       position: absolute;
       left: 0;
@@ -345,12 +319,13 @@
       background: linear-gradient(to right, #facc15, #f97316, #22c55e);
       transition: width 0.25s ease-out;
     }
-
     #mic-status {
       margin-top: 4px;
       font-size: 0.75rem;
       color: #d1fae5;
     }
+
+    /* Panel lateral */
 
     #side-panel {
       position: absolute;
@@ -370,18 +345,13 @@
       gap: 10px;
       font-size: 0.8rem;
     }
-
-    #side-panel.open {
-      transform: translateX(0);
-    }
-
+    #side-panel.open { transform: translateX(0); }
     .panel-section {
       background: rgba(15, 23, 42, 0.9);
       border-radius: 14px;
       padding: 8px 10px;
       border: 1px solid rgba(31, 41, 55, 0.9);
     }
-
     .panel-title {
       font-size: 0.78rem;
       font-weight: 600;
@@ -389,13 +359,11 @@
       color: #e5e7eb;
       margin-bottom: 4px;
     }
-
     .panel-sub {
       font-size: 0.7rem;
       color: #9ca3af;
       margin-bottom: 4px;
     }
-
     .panel-section textarea {
       width: 100%;
       min-height: 80px;
@@ -407,13 +375,11 @@
       font-size: 0.78rem;
       resize: vertical;
     }
-
     .panel-buttons {
       display: flex;
       gap: 6px;
       margin-top: 6px;
     }
-
     .btn-small {
       flex: 1;
       border-radius: 999px;
@@ -422,24 +388,20 @@
       background: rgba(31, 41, 55, 0.9);
       color: #e5e7eb;
       border: 1px solid rgba(75, 85, 99, 0.9);
+      cursor: pointer;
     }
-
     .btn-small.primary {
       background: #22c55e;
       border-color: #16a34a;
       color: #022c22;
       font-weight: 600;
     }
-
     .slider-row {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-
-    .slider-row input[type="range"] {
-      flex: 1;
-    }
+    .slider-row input[type="range"] { flex: 1; }
 
     .panel-help-list {
       list-style: disc;
@@ -447,6 +409,22 @@
       color: #9ca3af;
       font-size: 0.72rem;
     }
+
+    .record-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .record-row .btn-small {
+      flex: 1;
+      text-align: center;
+    }
+    #recording-player {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    /* Confeti */
 
     .confetti-piece {
       position: fixed;
@@ -458,25 +436,21 @@
       animation: confetti-fall 1s ease-out forwards;
       z-index: 50;
     }
-
     @keyframes confetti-fall {
-      0% {
-        transform: translate3d(0,0,0) rotateZ(0deg);
-      }
+      0% { transform: translate3d(0,0,0) rotateZ(0deg); }
       100% {
         transform: translate3d(var(--x-move), 60px, 0) rotateZ(360deg);
         opacity: 0;
       }
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 <div id="app">
 
+  <!-- PANTALLA DE INICIO -->
   <section id="start-screen">
     <div class="start-card">
       <div class="start-visual"></div>
@@ -499,8 +473,7 @@
         </p>
         <div class="start-actions">
           <button id="btn-start" class="btn-primary">
-            Empezar a jugar
-            <span>▶</span>
+            Empezar a jugar <span>▶</span>
           </button>
           <button class="btn-secondary" type="button">
             Versión inicial · modo lluvia
@@ -510,7 +483,10 @@
     </div>
   </section>
 
+  <!-- PANTALLA DE JUEGO -->
   <section id="game-screen">
+    <div id="rainbow-band"></div>
+
     <button id="menu-button" title="Abrir panel de control">
       <span>☰</span>
     </button>
@@ -529,7 +505,7 @@
     <div id="play-area"></div>
 
     <div id="bottom-bar">
-      <div>Depósito de estrellas</div>
+      <div id="bottom-bar-title">Cielo de estrellas</div>
       <div class="stars-bar">
         <div class="stars-fill" id="stars-fill"></div>
       </div>
@@ -559,16 +535,27 @@
       </div>
 
       <div class="panel-section">
+        <div class="panel-title">Grabación</div>
+        <div class="panel-sub">
+          Graba una frase para que el peque pueda escucharse. Mientras grabas, el juego se pausa.
+        </div>
+        <div class="record-row">
+          <button id="btn-record" class="btn-small primary">Grabar</button>
+          <button id="btn-stop-record" class="btn-small" disabled>Parar</button>
+        </div>
+        <audio id="recording-player" controls></audio>
+      </div>
+
+      <div class="panel-section">
         <div class="panel-title">Ayuda rápida</div>
         <ul class="panel-help-list">
           <li>El panel pausa el juego al abrirse.</li>
           <li>Pulsa 🎤 para que las palabras exploten al decirlas.</li>
           <li>Funciona en ordenador y móvil (vertical u horizontal).</li>
-          <li>Puedes cambiar la lista de palabras cuando quieras.</li>
+          <li>Puedes cambiar la lista de palabras o usar frases más largas.</li>
         </ul>
       </div>
     </aside>
-
   </section>
 </div>
 
@@ -590,6 +577,9 @@
   const wordsInput = document.getElementById("words-input");
   const btnLoadDefault = document.getElementById("btn-load-default");
   const btnUseCustom = document.getElementById("btn-use-custom");
+  const btnRecord = document.getElementById("btn-record");
+  const btnStopRecord = document.getElementById("btn-stop-record");
+  const recordingPlayer = document.getElementById("recording-player");
 
   let isRunning = false;
   let isPaused = false;
@@ -605,6 +595,10 @@
   let recognition = null;
   let micOn = false;
 
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let wasMicOnBeforeRecording = false;
+
   const defaultWords = [
     "sol","luz","nube","árbol","río","tren","flor","cielo","mar","arena",
     "libro","risa","parque","nieve","hoja","canto","casa","puente","fuego","lluvia"
@@ -619,10 +613,12 @@
     return text
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")   // quitar tildes (compatible)
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-zñ\s]/g, " ")
       .trim();
   }
+
+  /* ===== JUEGO ===== */
 
   function startGame() {
     startScreen.style.display = "none";
@@ -676,7 +672,7 @@
     el.textContent = text;
 
     const areaRect = playArea.getBoundingClientRect();
-    const wordWidth = 80;
+    const wordWidth = 90;
     const x = Math.random() * Math.max(10, areaRect.width - wordWidth - 20);
     const y = -40;
 
@@ -733,7 +729,7 @@
         if (wordObj.el && wordObj.el.parentNode) {
           wordObj.el.parentNode.removeChild(wordObj.el);
         }
-      }, 380);
+      }, 180);
     }
     if (addScore) {
       score += 10;
@@ -744,6 +740,8 @@
     }
   }
 
+  /* ===== MICRÓFONO PARA EXPLOTAR PALABRAS ===== */
+
   function setupRecognition() {
     if (!SpeechRecognition) {
       micStatus.textContent = "Este navegador no admite reconocimiento de voz. Prueba con Chrome.";
@@ -752,14 +750,14 @@
     }
     recognition = new SpeechRecognition();
     recognition.continuous = true;
-    recognition.interimResults = false;
+    recognition.interimResults = true; // para reaccionar antes
     recognition.lang = "es-ES";
 
     recognition.onresult = (event) => {
       if (!isRunning || isPaused) return;
-      const lastResult = event.results[event.results.length - 1];
-      if (!lastResult || !lastResult[0]) return;
-      const transcript = normalize(lastResult[0].transcript || "");
+      const last = event.results[event.results.length - 1];
+      if (!last || !last[0]) return;
+      const transcript = normalize(last[0].transcript || "");
       if (!transcript) return;
 
       activeWords.slice().forEach(wordObj => {
@@ -786,9 +784,7 @@
     if (!SpeechRecognition) return;
     micOn = !micOn;
     if (micOn) {
-      try {
-        recognition.start();
-      } catch (e) {}
+      try { recognition.start(); } catch (e) {}
       micToggle.classList.add("listening");
       micStatus.textContent = "Micrófono escuchando. Di la palabra que cae.";
     } else {
@@ -797,6 +793,72 @@
       micStatus.textContent = "Micrófono apagado. Pulsa 🎤 para activarlo.";
     }
   }
+
+  /* ===== GRABACIÓN DE VOZ ===== */
+
+  function startRecording() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("Este navegador no permite grabar audio.");
+      return;
+    }
+
+    // Pausamos juego y guardamos estado del mic
+    if (!isPaused) {
+      openPanel(); // por si acaso
+    }
+    wasMicOnBeforeRecording = micOn;
+    if (micOn) {
+      micOn = false;
+      recognition && recognition.stop();
+      micToggle.classList.remove("listening");
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        try {
+          mediaRecorder = new MediaRecorder(stream);
+        } catch (e) {
+          alert("No se ha podido iniciar la grabación.");
+          stream.getTracks().forEach(t => t.stop());
+          return;
+        }
+        recordedChunks = [];
+        mediaRecorder.ondataavailable = e => {
+          if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: "audio/webm" });
+          recordingPlayer.src = URL.createObjectURL(blob);
+          stream.getTracks().forEach(t => t.stop());
+        };
+        mediaRecorder.start();
+        btnRecord.disabled = true;
+        btnStopRecord.disabled = false;
+        micStatus.textContent = "Grabando voz… El juego está en pausa.";
+      })
+      .catch(() => {
+        alert("No se ha podido acceder al micrófono para grabar.");
+      });
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+      mediaRecorder = null;
+      btnRecord.disabled = false;
+      btnStopRecord.disabled = true;
+      micStatus.textContent = "Grabación terminada. Puedes reproducirla abajo.";
+      // Restaurar micrófono de explosión si estaba encendido
+      if (wasMicOnBeforeRecording && SpeechRecognition) {
+        micOn = true;
+        try { recognition.start(); } catch (e) {}
+        micToggle.classList.add("listening");
+        micStatus.textContent += " Micrófono de juego reactivado.";
+      }
+    }
+  }
+
+  /* ===== CONFETI ===== */
 
   function createConfetti(x, y) {
     const colors = ["#facc15","#f97316","#22c55e","#38bdf8","#e879f9","#f472b6"];
@@ -818,26 +880,38 @@
     }
   }
 
+  /* ===== PANEL / PAUSA ===== */
+
   function openPanel() {
     sidePanel.classList.add("open");
     isPaused = true;
     gameScreen.classList.add("paused");
   }
-
   function closePanel() {
     sidePanel.classList.remove("open");
     isPaused = false;
     gameScreen.classList.remove("paused");
   }
 
+  /* ===== EVENTOS ===== */
+
   btnStart.addEventListener("click", startGame);
 
-  menuButton.addEventListener("click", () => {
+  menuButton.addEventListener("click", (e) => {
+    e.stopPropagation();
     if (sidePanel.classList.contains("open")) {
       closePanel();
     } else {
       openPanel();
     }
+  });
+
+  // Cerrar panel pulsando fuera (pero sin fastidiar el botón de menú)
+  gameScreen.addEventListener("click", (e) => {
+    if (!sidePanel.classList.contains("open")) return;
+    if (sidePanel.contains(e.target)) return;
+    if (menuButton.contains(e.target)) return;
+    closePanel();
   });
 
   speedSlider.addEventListener("input", () => {
@@ -862,13 +936,8 @@
 
   micToggle.addEventListener("click", toggleMic);
 
-  gameScreen.addEventListener("click", (e) => {
-    if (sidePanel.classList.contains("open")) {
-      if (!sidePanel.contains(e.target) && e.target !== menuButton) {
-        closePanel();
-      }
-    }
-  });
+  btnRecord.addEventListener("click", startRecording);
+  btnStopRecord.addEventListener("click", stopRecording);
 
   setInitialWords();
   setupRecognition();
