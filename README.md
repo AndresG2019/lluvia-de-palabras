@@ -1,56 +1,43 @@
-📘 Lluvia de Palabras – Proyecto BEYUGA
+<p align="center">
+  <img src="logo beyuga.png" width="180" alt="Logo BEYUGA">
+</p>
 
-Juego educativo de lectura en voz alta para niños y niñas
+# 📘 Lluvia de Palabras – Proyecto BEYUGA
+### *Juego educativo de lectura en voz alta para niños y niñas*
 
-🌈 ¿Qué es Lluvia de Palabras?
+---
 
-Lluvia de Palabras es un juego educativo diseñado para mejorar:
+## 🌈 ¿Qué es Lluvia de Palabras?
 
-La lectura en voz alta
+**Lluvia de Palabras** es un juego educativo diseñado para que los niños y niñas practiquen:
 
-La atención
+- la lectura en voz alta,  
+- la atención,  
+- la articulación,  
+- la rapidez lectora,  
+- y la comprensión de palabras sencillas o frases cortas.
 
-La pronunciación
+Las palabras caen desde la parte superior de la pantalla y el niño debe **leerlas en voz alta**.  
+Si la pronunciación es correcta, la palabra **explota** en una animación, haciendo que la experiencia sea divertida y motivadora.
 
-La velocidad lectora
+Es un proyecto creado por **Andrés L. Belluga (BEYUGA)**, pensado para educación, logopedia, intervención temprana y familias.
 
-La motivación en el aprendizaje
+---
 
-Las palabras caen desde la parte superior de la pantalla y el niño debe leerlas en voz alta para destruirlas mediante reconocimiento de voz.
+## 🎮 Características actuales
 
-Es un proyecto creado por Andrés L. Belluga (BEYUGA), con un enfoque lúdico y accesible para educación, logopedia y familias.
+- ✔ Reconocimiento de voz  
+- ✔ Interacción inmediata: destrucción de la palabra al pronunciarla  
+- ✔ Palabras configurables por el educador o la familia  
+- ✔ Funciona en PC, tablet y móvil  
+- ✔ Menú lateral de ajustes  
+- ✔ Diseño claro, luminoso y accesible  
+- ✔ Web app sin instalación
 
-🎮 Características actuales
+---
 
-✔ Palabras cayendo tipo “rainfall”
-✔ Reconocimiento de voz
-✔ Explosión de palabras al pronunciarlas
-✔ Modo progresivo
-✔ Paleta de colores amable
-✔ Funciona en móvil, tablet y PC
-✔ Sin instalación (app web)
-✔ Código limpio y sencillo
+## 🚀 Próximas mejoras previstas
 
-🚀 Próximas mejoras
-
-Conversión a PWA para instalar la app en móvil
-
-Frases y niveles de dificultad
-
-Nuevo diseño visual
-
-Fondos temáticos
-
-Confeti y animaciones instantáneas
-
-Modo lluvia y modo frase
-
-Grabación y reproducción de voz
-
-Reconocimiento más rápido y preciso
-
-🧩 Cómo usarlo
-
-Simplemente abre:
-
-👉 https://beyuga-es.github.io/lluvia-de-palabras/
+- ⭐ Conversión a **PWA** para instalar la app  
+- ⭐ Fondos temáticos y arco iris translúcido  
+- ⭐ Niveles de dificultad (palabra
